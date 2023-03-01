@@ -1,0 +1,15 @@
+nxb = 100; nyb = 500
+message = \
+"hello,
+this is your father speaking.
+please come home
+love,
+dad"
+Fluid
+{
+    reynolds    = 1600
+    mach        = 1.25
+    output_file = false //if this is true, then 'filename' MUST be present
+    filename    = "clams.csv"
+}
+//blank line
