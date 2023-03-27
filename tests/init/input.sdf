@@ -1,3 +1,5 @@
+#include "/my/absolute/path.sdf"
+
 nxb = 100; nyb = 500
 message = \
 "hello,

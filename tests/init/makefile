@@ -1,4 +1,4 @@
-target := out.x
+target := a.x
 
 flags :=
 flags += -std=c++20
