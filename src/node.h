@@ -6,6 +6,7 @@
 
 #include "string_util.h"
 #include "string_conversion.h"
+#include "context.h"
 
 namespace scidf
 {
@@ -51,6 +52,25 @@ namespace scidf
                 children.insert({key, node_t(this, key)});
             }
             return children.at(key);
+        }
+
+        
+
+        void read(const std::string& filename, const context_t& parent_context)
+        {
+            
+        }
+
+        void read(const std::string& filename)
+        {
+            context_t c;
+            read(filename, c);
+        }
+
+        void read(const std::string& filename, const clargs_t& args)
+        {
+            context_t c(args);
+            read(filename, c);
         }
     };
     
