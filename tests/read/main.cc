@@ -7,9 +7,7 @@ int main(int argc, char** argv)
     // scidf::format_t format;
     scidf::node_t data;
     scidf::clargs_t clargs(argc, argv);
-    data.read(filename);
-    
-    // scidf::bind(nxb, data["nxb"], );
+    scidf::read(filename, data, clargs);
     int nxb;
     
     return 0;

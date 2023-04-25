@@ -1,1 +1,32 @@
-stink
+   ;thing=1       sads$;pppp=00123;;;;;;;;;;;;;;;;;;;;;;
+   
+pp="!!!"    
+first{
+    oooo=0
+}
+         zee_zee = [1, 4, 3];
+    griddd = "h}{{}{}{{}}}{}{}{\
+    }{}}}{}{{{}{{}}}i\
+    more\
+    lines"
+    Grid
+                    ;;;;;;;;;;;    
+{
+    holymoly
+    {
+
+    }
+    num_blocks = [16, 2, 6]
+    num_cells  = [32, 64, 16]
+    num_exchg  = [2, 2, 2]
+    dims       = [0.0, 12.0, -1.0, 1.0, 0.0, 5.0]
+}
+              ;;;;;;;;"";;;;;"
+              {}"bruh{}
+p=1;
+;;;;;;Empty{}
+Time
+{
+    cfl           = 0.65
+    nt_max        = 140000
+}

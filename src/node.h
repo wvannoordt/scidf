@@ -18,19 +18,21 @@ namespace scidf
         node_t* parent;
         std::string name, value;
         std::map<std::string, node_t> children;
+        int level;
         
         node_t()
         {
             parent = nullptr;
             name  = default_name();
             value = default_value();
+            level = 0;
         }
         
         node_t(node_t* parent_in, const std::string& name_in, const std::string& value_in)
-        : parent{parent_in}, name{name_in}, value{value_in} {}
+        : parent{parent_in}, name{name_in}, value{value_in}, level{parent_in->level+1} {}
         
         node_t(node_t* parent_in, const std::string& name_in)
-        : parent{parent_in}, name{name_in}, value{default_value()} {}
+        : parent{parent_in}, name{name_in}, value{default_value()}, level{parent_in->level+1} {}
         
         template <typename rhs_t> node_t& operator = (const rhs_t& rhs)
         {
@@ -56,22 +58,7 @@ namespace scidf
 
         
 
-        void read(const std::string& filename, const context_t& parent_context)
-        {
-            
-        }
-
-        void read(const std::string& filename)
-        {
-            context_t c;
-            read(filename, c);
-        }
-
-        void read(const std::string& filename, const clargs_t& args)
-        {
-            context_t c(args);
-            read(filename, c);
-        }
+        
     };
     
     namespace detail
