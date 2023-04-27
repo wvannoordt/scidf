@@ -20,4 +20,30 @@ namespace scidf::str
         end += 1;
         return str.substr(start, end-start);
     }
+
+    template <typename string_t>
+    static bool str_starts_at(const string_t& content, const std::size_t& j, const std::string& query)
+    {
+        if (j + query.length() - 1 >= content.length()) return false;
+        std::size_t p = 0;
+        while (p < query.length())
+        {
+            if (query[p] != content[j+p]) return false;
+            p++;
+        }
+        return true;
+    }
+
+    template <typename string_t>
+    static bool str_ends_at  (const string_t& content, const std::size_t& j, const std::string& query)
+    {
+        if (j < query.length()-1) return false;
+        std::size_t p = 0;
+        while(p < query.length())
+        {
+            if (query[query.length() - 1 - p] != content[j - p]) return false;
+            p++;
+        }
+        return true;
+    }
 }

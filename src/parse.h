@@ -17,20 +17,40 @@ namespace scidf
         static std::vector<std::pair<std::size_t, std::size_t>>
         seek_section_delimiters(const content_view& content, const context_t& context)
         {
-            std::size_t start, end, last_quote, last_open, last_close;
+            std::size_t start, end, last_quote, last_open, last_close, last_open_comment;
             int level = 0;
             std::vector<std::pair<std::size_t, std::size_t>> output;
-            //Things that can escape the section delimiters: strings
-            bool escaped = false;
+            //Things that can escape the section delimiters: strings, comments
+            bool string_escaped        = false;
+            bool short_comment_escaped = false;
+            bool long_comment_escaped  = false;
             for (std::size_t i = 0; i < content.length(); ++i)
             {
-                if (content[i] == context.get_syms().open_string)
+                if (content[i] == context.get_syms().open_string && !(short_comment_escaped || long_comment_escaped))
                 {
                     last_quote = i;
-                    escaped    = !escaped;
+                    string_escaped = !string_escaped;
                 }
+
                 bool open_detected  = (content[i] == context.get_syms().open_section);
                 bool close_detected = (content[i] == context.get_syms().close_section);
+
+                if (str::str_starts_at(content, i, context.get_syms().start_long_comment) && !long_comment_escaped)
+                {
+                    last_open_comment = i;
+                    long_comment_escaped = true;
+                }
+                if (str::str_ends_at  (content, i, context.get_syms().end_long_comment))
+                {
+                    if (!long_comment_escaped) throw sdf_content_exception(content, i, "unmatched long-comment delimiter");
+                    long_comment_escaped = false;
+                }
+
+                if (str::str_starts_at(content, i, context.get_syms().line_comment)) short_comment_escaped = true;
+                if (content[i] == context.get_syms().line_break) short_comment_escaped = false;
+
+                bool escaped = string_escaped || short_comment_escaped || long_comment_escaped;
+
                 if (open_detected  && !escaped)
                 {
                     level++;
@@ -52,9 +72,13 @@ namespace scidf
                     throw sdf_content_exception(content, i, "unmatched close-section brace");
                 }
             }
-            if (escaped)
+            if (string_escaped)
             {
                 throw sdf_content_exception(content, last_quote, "unterminated string delimiter");
+            }
+            if (long_comment_escaped)
+            {
+                throw sdf_content_exception(content, last_open_comment, "unterminated long comment");
             }
             if (level > 0)
             {
@@ -91,7 +115,7 @@ namespace scidf
         {
             auto is_dlm = [&](char i) { return (i==context.get_syms().terminate) || (i==context.get_syms().line_break);};
             std::string current = "";
-            auto is_whitespace = [&](const std::string& stuff)
+            auto is_whitespace = [&](const auto& stuff)
             {
                 for (std::size_t u = 0; u < stuff.length(); ++u)
                 {
