@@ -253,16 +253,13 @@ namespace scidf
     static void parse(const content_view& content, node_t& node, const context_t& parent_context)
     {
         auto [lines, subsections] = extract_data(content, parent_context);
-        print("=====    SECTION LINES    ======");
         for (auto pp: lines)
         {
             print(pp.second, pp.first);
         }
-        print("===== SECTION SUBSECTIONS ======");
         for (auto pp: subsections)
         {
-            print(pp.first);
-            print(pp.second.length(), "==>", pp.second);
+            parse(pp.second, node, parent_context);
         }
     }
 }
