@@ -1,13 +1,29 @@
+  
+  
+  
+  
+  
+  
    ;thing=1       sads$;pppp=00123;;;;;;;;;;;;;;;;;;;;;;
    
-pp="!!!"    ;sss=1203
-a=1;b=2;c=3;;;;;;;;;;;;;;;;;;;;;/* zizz;zz;;;;;;;;;;;
+pp="!!!"    ;sss=1203, 134, 123, \
+133\
+, 13413
+
+a=1;b=2;
+c\
+=\
+3;;;;;;;;;;;;;;;;;;;;;/* zizz;zz;;;;;;;;;;;
 first{
     oooo=0
 }
 */
          zee_zee = [1, 4, 3];
   ;jam boys = zed
+
+  multiline_string = @func("line1
+  line2
+  line3")
   someththing = begincontent/*
   this comment splits a line
   and has other lines*/endcontent
@@ -32,9 +48,9 @@ first{
 }
               ;;;;;;;;"";;;;;"
               {}"bruh{}
-p=1;
+                                                             p=1;
 ;;;;;;Empty{}//bah bah
-//This comment has a spicy symbol   
+//This comment has a spicy symbol"
 Time
 {
     cfl           = 0.65

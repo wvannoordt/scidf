@@ -111,10 +111,14 @@ namespace scidf
         }
 
         static void
-        add_lines(std::vector<std::string>& lines, const content_view& content, const context_t& context)
+        append_lines(
+            std::vector<std::pair<std::string, std::size_t>>& lines,
+            const content_view& content,
+            const context_t& context)
         {
             auto is_dlm = [&](char i) { return (i==context.get_syms().terminate) || (i==context.get_syms().line_break);};
             std::string current = "";
+            std::size_t last_push_char = 0;
             auto is_whitespace = [&](const auto& stuff)
             {
                 for (std::size_t u = 0; u < stuff.length(); ++u)
@@ -123,10 +127,13 @@ namespace scidf
                 }
                 return true;
             };
-            auto addline = [&](const std::string& str)
+            auto addline = [&](const std::string& str, const std::size_t char_number)
             {
                 if (!is_whitespace(str))
-                lines.push_back(str::trim(str, context.get_syms().whitespace));
+                {
+                    const auto [line, line_str] = content.seek_line_at(char_number);
+                    lines.push_back({str::trim(str, context.get_syms().whitespace), line});
+                }
             };
             for (std::size_t j = 0; j < content.length(); ++j)
             {
@@ -140,20 +147,78 @@ namespace scidf
                     if (j > 0) skip = (content[j-1] == context.get_syms().line_continue);
                     if (!skip)
                     {
-                        addline(current);
+                        addline(current, last_push_char);
                         current = "";
+                        last_push_char = j+1;
+                        if (last_push_char >= content.length()) last_push_char = content.length();
                     }
                 }
             }
-            addline(current);
+            addline(current, last_push_char);
         }
     }
 
+    static std::vector<std::pair<std::string, std::size_t>>
+    clean_lines(const std::vector<std::pair<std::string, std::size_t>>& raw, const context_t& context)
+    {
+        std::vector<std::pair<std::string, std::size_t>> output;
+        std::size_t line_source_index = 0;
+        if (raw.size() == 0) return output;
+        std::size_t current_line = raw[0].second;
+        std::string concat = raw[0].first;
+        for (std::size_t i = 1; i < raw.size(); ++i) concat += (context.get_syms().terminate+raw[i].first);
+        std::string current_str = "";
+        bool string_escaped = false;
+        bool long_comment_escaped  = false;
+        bool short_comment_escaped = false;
+        auto is_whitespace = [&](const auto& stuff)
+        {
+            for (std::size_t u = 0; u < stuff.length(); ++u)
+            {
+                if (context.get_syms().whitespace.find(stuff[u]) == std::string::npos) return false;
+            }
+            return true;
+        };
+        auto addline = [&](const std::string& line, const std::size_t& line_number)
+        {
+            if (!is_whitespace(line))
+            {
+                output.push_back({line, line_number});
+            }
+        };
+        for (std::size_t j = 0; j < concat.size(); ++j)
+        {
+            char c = concat[j];
+            if (c == context.get_syms().open_string && !long_comment_escaped && !short_comment_escaped) string_escaped = !string_escaped;
+            bool linebreak = (c==context.get_syms().terminate);
+            if (str::str_starts_at(concat, j, context.get_syms().line_comment)) short_comment_escaped = true;
+            if (linebreak && short_comment_escaped) short_comment_escaped = false;
+            if (str::str_starts_at(concat, j, context.get_syms().start_long_comment)) long_comment_escaped = true;
+            
+
+            if (!(short_comment_escaped || long_comment_escaped))
+            {
+                if (!linebreak) current_str += c;
+                if (linebreak && string_escaped) current_str += '\n';
+            }
+            if (linebreak) line_source_index++;
+            if (linebreak && !string_escaped && !long_comment_escaped)
+            {
+                addline(current_str, current_line);
+                current_str = "";
+                current_line = raw[line_source_index].second;
+            }
+            if (str::str_ends_at  (concat, j, context.get_syms().end_long_comment))   long_comment_escaped = false;
+        }
+        addline(current_str, current_line);
+        return output;
+    }
+
     static
-    std::tuple<std::vector<std::string>, std::vector<std::pair<std::string, content_view>>>
+    std::tuple<std::vector<std::pair<std::string, std::size_t>>, std::vector<std::pair<std::string, content_view>>>
     extract_data(const content_view& content, const context_t& context)
     {
-        std::vector<std::string> lines;
+        std::vector<std::pair<std::string, std::size_t>> lines;
         std::vector<std::pair<std::string, content_view>> subsections;
         std::vector<std::pair<std::size_t, std::size_t>> positions = detail::seek_section_delimiters(content, context);
         for (auto& p: positions)
@@ -179,19 +244,25 @@ namespace scidf
         for (auto l: line_datas)
         {
             auto subv = content.subview(l.first, l.second);
-            detail::add_lines(lines, subv, context);
+            detail::append_lines(lines, subv, context);
         }
-        return std::make_tuple(lines, subsections);
+        std::vector<std::pair<std::string, std::size_t>> cleaned_lines = clean_lines(lines, context);
+        return std::make_tuple(cleaned_lines, subsections);
     }
 
     static void parse(const content_view& content, node_t& node, const context_t& parent_context)
     {
         auto [lines, subsections] = extract_data(content, parent_context);
-        for (auto pp: lines) print(pp);
-        // for (auto pp: subsections)
-        // {
-        //     print(pp.first);
-        //     print(pp.second.length(), "==>", pp.second);
-        // }
+        print("=====    SECTION LINES    ======");
+        for (auto pp: lines)
+        {
+            print(pp.second, pp.first);
+        }
+        print("===== SECTION SUBSECTIONS ======");
+        for (auto pp: subsections)
+        {
+            print(pp.first);
+            print(pp.second.length(), "==>", pp.second);
+        }
     }
 }
