@@ -2,6 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <fstream>
+#include <filesystem>
+#include <sstream>
+
+#include "sdf_exception.h"
 
 namespace scidf::str
 {
@@ -45,5 +51,36 @@ namespace scidf::str
             p++;
         }
         return true;
+    }
+
+    static inline std::vector<std::string>
+    split(const std::string& str_in, const std::string dlm)
+    {
+        std::vector<std::string> subStrings;
+        size_t pos = 0;
+        std::string token;
+        std::string str = str_in;
+        while ((pos = str.find(dlm)) != std::string::npos)
+        {
+            token = str.substr(0, pos);
+            subStrings.push_back(token);
+            str.erase(0, pos + dlm.length());
+        }
+        subStrings.push_back(str);
+        return subStrings;
+    }
+
+    static inline std::string
+    read_contents(const std::string& filename)
+    {
+        if (!std::filesystem::exists(filename) || std::filesystem::is_directory(filename))
+            throw sdf_exception("Cannot find file \"" + filename + "\"");
+        std::ifstream t(filename);
+        std::string str;
+        t.seekg(0, std::ios::end);   
+        str.reserve(t.tellg());
+        t.seekg(0, std::ios::beg);
+        str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+        return str;
     }
 }

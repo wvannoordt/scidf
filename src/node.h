@@ -27,6 +27,13 @@ namespace scidf
             value = default_value();
             level = 0;
         }
+
+        template <typename criterion_t, typename action_t>
+        void visit(const criterion_t& crit, const action_t action) const
+        {
+            if (crit(*this)) action(*this);
+            for (const auto& c: children) c.second.visit(crit, action);
+        }
         
         node_t(node_t* parent_in, const std::string& name_in, const std::string& value_in)
         : parent{parent_in}, name{name_in}, value{value_in}, level{parent_in->level+1} {}
@@ -39,13 +46,32 @@ namespace scidf
             value = str::convert_to_string(rhs);
             return *this;
         }
+
+        template <typename converted_t> operator converted_t()
+        {
+            //todo
+            // convert_t<converted_t> converter;
+            return converted_t("HHHH");
+        }
+
+        std::string get_path(const context_t& context) const
+        {
+            if (is_root()) return "";
+            if (parent->is_root()) return name;
+            return context.get_syms().scope_operator + name;
+        }
         
         bool is_root() const {return parent == nullptr;}
         bool has_value() const {return value != default_value();}
         bool is_terminal() const {return children.size() == 0;}
+        bool contains_child(const std::string& key) const
+        {
+            return children.find(key) != children.end();
+        }
         
         void set_value(const std::string& val) { value = val; }
         const std::string& get_value() const { return value; }
+        std::string get_name() const {return name;}
         
         node_t& operator [] (const std::string& key)
         {
@@ -55,10 +81,6 @@ namespace scidf
             }
             return children.at(key);
         }
-
-        
-
-        
     };
     
     namespace detail
@@ -78,7 +100,14 @@ namespace scidf
     
     std::ostream& operator << (std::ostream& os, const node_t& node)
     {
-        detail::rprint_node(os, node, 0);
+        if (node.is_terminal())
+        {
+            os << node.get_value();
+        }
+        else
+        {
+            detail::rprint_node(os, node, 0);
+        }
         return os;
     }
 }

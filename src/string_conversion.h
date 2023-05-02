@@ -10,4 +10,9 @@ namespace scidf::str
     {
         return std::to_string(data);
     }
+
+    static std::string convert_to_string(const std::string& data)
+    {
+        return data;
+    }
 }

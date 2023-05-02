@@ -15,13 +15,8 @@ namespace scidf
 {
     static void read(const std::string& filename, node_t& node, const context_t& parent_context)
     {
-        std::ifstream t(filename);
-        std::string str;
-        t.seekg(0, std::ios::end);   
-        str.reserve(t.tellg());
-        t.seekg(0, std::ios::beg);
-        str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-        content_view content(str);
+        const std::string file_contents = str::read_contents(filename);
+        content_view content(file_contents);
         parse(content, node, parent_context);
     }
     

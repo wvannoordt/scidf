@@ -1,0 +1,5 @@
+stuff_from_junk = 00
+section_from_junk
+{
+    b=1; g=0
+}

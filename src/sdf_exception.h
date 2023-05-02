@@ -29,4 +29,18 @@ namespace scidf
             return error_message.c_str();
         }
     };
+
+    struct sdf_line_exception : public std::exception
+    {
+        std::string error_message;
+        sdf_line_exception(const std::pair<std::string, std::size_t>& line, const std::string& message_in)
+        {
+            error_message = "scidf line exception: " + message_in;
+            error_message += "\nLocation: \nLine " + std::to_string(line.second) + ":  -->  " + line.first;
+        }
+        const char* what() const throw()
+        {
+            return error_message.c_str();
+        }
+    };
 }

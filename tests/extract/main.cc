@@ -3,11 +3,11 @@
 
 int main(int argc, char** argv)
 {
-    std::string filename = "clean.sdf";
-    if (argc>1) filename = std::string(argv[1]);    
+    std::string filename = "data.sdf";
     scidf::node_t data;
     scidf::clargs_t clargs(argc, argv);
     scidf::read(filename, data, clargs);
-    print(data);
+    std::string temp = data["value1"];
+    print(temp);
     return 0;
 }
