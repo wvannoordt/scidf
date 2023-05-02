@@ -1,0 +1,6 @@
+freeform = 0
+section1
+{
+    data1 = 0
+    data2 = "hello"
+}

@@ -1,0 +1,18 @@
+@addpath(./sub)
+@import(junk)
+Grid
+{
+    num_blocks = [16, 2, 6]
+    num_cells  = [32, 64, 16]
+    num_exchg  = [2, 2, 2]
+    dims       = [0.0, 12.0, -1.0, 1.0, 0.0, 5.0]
+}
+Time
+{
+    cfl           = 0.65
+    nt_max        = 140000
+    nt_skip       = 1500
+    ck_skip       = 500
+    output_timing = false
+    @import(extdata)
+}
