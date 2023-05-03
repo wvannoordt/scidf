@@ -7,6 +7,7 @@
 #include "string_util.h"
 #include "string_conversion.h"
 #include "context.h"
+#include "conversion.h"
 
 namespace scidf
 {
@@ -17,6 +18,7 @@ namespace scidf
         static std::string default_value() {return "[[NOVALUE]]";}
         node_t* parent;
         std::string name, value;
+        bool assigned_value = false;
         std::map<std::string, node_t> children;
         int level;
         
@@ -40,18 +42,22 @@ namespace scidf
         
         node_t(node_t* parent_in, const std::string& name_in)
         : parent{parent_in}, name{name_in}, value{default_value()}, level{parent_in->level+1} {}
-        
-        template <typename rhs_t> node_t& operator = (const rhs_t& rhs)
-        {
-            value = str::convert_to_string(rhs);
-            return *this;
-        }
 
         template <typename converted_t> operator converted_t()
         {
-            //todo
-            // convert_t<converted_t> converter;
-            return converted_t("HHHH");
+            if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + name + "\"");
+            if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + name + "\"");
+            try
+            {
+                iconversion_t icv(value);
+                converted_t val;
+                icv >> val;
+                return val;
+            }
+            catch (const std::exception& e)
+            {
+                throw sdf_exception("error in conversion of target \"" + name + "\":\n" + std::string(e.what()));
+            }
         }
 
         std::string get_path(const context_t& context) const
@@ -69,7 +75,7 @@ namespace scidf
             return children.find(key) != children.end();
         }
         
-        void set_value(const std::string& val) { value = val; }
+        void set_value(const std::string& val) { value = val; assigned_value = true; }
         const std::string& get_value() const { return value; }
         std::string get_name() const {return name;}
         

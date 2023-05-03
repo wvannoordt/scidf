@@ -13,6 +13,6 @@ namespace scidf::str
 
     static std::string convert_to_string(const std::string& data)
     {
-        return data;
+        return "\"" + data + "\"";
     }
 }

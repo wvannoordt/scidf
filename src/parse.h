@@ -99,7 +99,7 @@ namespace scidf
                     auto [name, raw_value] = parse_assignment(lines[i], child_context);
                     if (node[name].has_value()) throw sdf_line_exception(lines[i], "attempted duplicate assignment");
                     //Todo: resolve the name here if there is a function invocation
-                    node[name] = resolve(raw_value, child_context);
+                    node[name].set_value(resolve(raw_value, child_context));
                     break;
                 }
                 case line_imperative:

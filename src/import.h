@@ -18,7 +18,7 @@ namespace scidf
             }
             if (c.second.is_terminal())
             {
-                dest[c.second.get_name()] = c.second.get_value();
+                dest[c.second.get_name()].set_value(c.second.get_value());
             }
             else
             {

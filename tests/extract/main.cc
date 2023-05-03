@@ -7,7 +7,10 @@ int main(int argc, char** argv)
     scidf::node_t data;
     scidf::clargs_t clargs(argc, argv);
     scidf::read(filename, data, clargs);
-    std::string temp = data["value1"];
-    print(temp);
+    std::vector<std::vector<std::string>> temp = data["section"]["politewords"];
+    for (auto& p: temp)
+    {
+        print(p[0], p[1], p[2]);
+    }
     return 0;
 }

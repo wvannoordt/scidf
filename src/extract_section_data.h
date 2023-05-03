@@ -12,7 +12,7 @@
 
 namespace scidf
 {
-        namespace detail
+    namespace detail
     {
         static std::vector<std::pair<std::size_t, std::size_t>>
         seek_section_delimiters(const content_view& content, const context_t& context)

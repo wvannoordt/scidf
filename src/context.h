@@ -28,13 +28,14 @@ namespace scidf
         std::string file_extension     = ".sdf";
         std::string import_symbol      = "import";
         std::string path_append        = "addpath";
-
     };
+
+    static syms_t glob_syms;
 
     struct context_t
     {
         std::vector<std::filesystem::path> paths;
-        syms_t syms;
+        const syms_t syms{glob_syms};
         context_t()
         {
             add_default_paths();
