@@ -1,0 +1,2 @@
+$ filename(x, y) = somevalue_$(x)_$(y).csv
+resolved_name = $(filename(zap, zop))

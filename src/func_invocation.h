@@ -40,7 +40,6 @@ namespace scidf
                 args_out.push_back(str::trim(current_arg, context.get_syms().whitespace));
                 current_arg = "";
             }
-
             bool add_char = (level > 1);
             add_char = add_char || ((level == 1) && (raw[i] != context.get_syms().open_arg) && !(raw[i] == context.get_syms().argument_separator));
             

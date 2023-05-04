@@ -2,6 +2,8 @@
 
 #include <filesystem>
 #include "clargs.h"
+#include "expression.h"
+#include "sdf_exception.h"
 
 namespace scidf
 {
@@ -22,6 +24,7 @@ namespace scidf
         std::string start_long_comment = "/*";
         std::string end_long_comment   = "*/";
         char invoke_func               = '@';
+        char invoke_var                = '$';
         char assignment                = '=';
         char argument_separator        = ',';
         std::string scope_operator     = ".";
@@ -35,6 +38,7 @@ namespace scidf
     struct context_t
     {
         std::vector<std::filesystem::path> paths;
+        std::map<std::string, expression_t> expressions;
         const syms_t syms{glob_syms};
         context_t()
         {
@@ -48,6 +52,13 @@ namespace scidf
         void add_default_paths()
         {
             paths.push_back(".");
+        }
+
+        void add_expression(const expression_t& new_expression)
+        {
+            if (expressions.find(new_expression.name) != expressions.end())
+                throw sdf_exception("attempted duplicate expression definition");
+            expressions.insert({new_expression.name, new_expression});
         }
 
         void add_path(const std::filesystem::path& path)

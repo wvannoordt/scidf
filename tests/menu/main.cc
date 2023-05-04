@@ -29,6 +29,9 @@ int main(int argc, char** argv)
     scidf::menu_t<std::vector<int>>      menu3 = data["menu3"];
     custom_t                             thing = data["custom"];
     scidf::menu_t<std::vector<custom_t>> cmenu = data["cmenu"];
+    print(std::boolalpha);
     print(cmenu.selected_value()[0].x, cmenu.selected_value()[0].y);
+    print(cmenu.selected_value()[1].x, cmenu.selected_value()[1].y);
+    print(cmenu.selected_value()[2].x, cmenu.selected_value()[2].y);
     return 0;
 }

@@ -13,7 +13,7 @@ menu3 = [ ] [1, 2, 3],             \
 custom = 10:false
 
 /*==========================================*/
-cmenu = [ ] [10:true,  10:true,  10:true ],  \
-        [ ] [10:false, 10:false, 10:false],  \
-        [x] [14:true,  14:true,  14:true ]
+cmenu = [ ] [10:false,  13:true,  10:false ],  \
+        [x] [12:true,   19:false,  9:true  ],  \
+        [x] [14:false,   2:true,   1:false ]
 /*==========================================*/

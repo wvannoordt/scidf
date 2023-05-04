@@ -10,6 +10,7 @@
 #include "import.h"
 #include "resolve.h"
 #include "imperative.h"
+#include "context_def.h"
 
 #include <vector>
 #include <tuple>
@@ -19,6 +20,9 @@ namespace scidf
 {
     enum line_type
     {
+        //used for definitions of variables and lambdas in the context
+        line_contextdef,
+
         //used for the assignment of a variable, expecting a name and a value
         line_assignment,
 
@@ -36,6 +40,7 @@ namespace scidf
     {
         switch(t)
         {
+            case line_contextdef: return "line_contextdef";
             case line_assignment: return "line_assignment";
             case line_imperative: return "line_imperative";
             case line_import:     return "line_import";
@@ -61,7 +66,9 @@ namespace scidf
             }
             return line_imperative;
         }
-        if (line.find(context.get_syms().assignment) != std::string::npos) return line_assignment;
+        bool has_assignment_operator = (line.find(context.get_syms().assignment) != std::string::npos);
+        if (has_assignment_operator && line[0]==context.get_syms().invoke_var) return line_contextdef;
+        if (has_assignment_operator) return line_assignment;
         return line_invalid;
     }
 
@@ -146,6 +153,18 @@ namespace scidf
                         {
                             throw sdf_line_exception(lines[i], "Error when attempting to import \"" + sdf_name + "\" at \"" + filename + "\":\n" + std::string(e.what()));
                         }
+                    }
+                    break;
+                }
+                case line_contextdef:
+                {
+                    try
+                    {
+                        context_def(lines[i], child_context);
+                    }
+                    catch (const std::exception& e)
+                    {
+                        throw sdf_line_exception(lines[i], std::string("bad context variable definition:\n") + e.what());
                     }
                     break;
                 }
