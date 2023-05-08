@@ -1,2 +1,19 @@
-$ filename(x, y) = somevalue_$(x)_$(y).csv
-resolved_name = $(filename(zap, zop))
+//mode 1: functions
+$filename(x, y) = somevalue1_$(x)_$(y).csv
+//resolved_name = "aa$filename(zap, zop)_pp paosd $filename(zop, zap)"
+//error1        = $filename(zap)           //not enough parameters
+//error2        = $filename(zap, ert, bip) //too many parameters
+//eeeeee        = $(rr) // -> @.invoke_var(rr)
+
+$ pair(x, y) = [$(x),$(y)]
+//arr = $pair($pair($pair(9, 0), $pair(5, 6)), $pair($pair(1, 5), $pair(4, 2)))
+//arr2 = @env(SCIDF)
+
+$ array0(i) = @choose($(i), 0, 1, 2)
+$ array1(i) = @choose($(i), 3, 4, 5)
+$ array2(i) = @choose($(i), 6, 7, 8)
+
+$ mat(i, j) = @choose($(i), $array0($(j)), $array1($(j)), $array2($(j)))
+$ sym(i, j) = [$mat($(i), $(j)), $mat($(j), $(i))]
+//arval  = $array0(2)
+matval = $sym(2,1)

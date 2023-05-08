@@ -93,7 +93,7 @@ namespace scidf
             line_types.push_back(classify_line(l, parent_context));
         }
 
-        context_t child_context = parent_context;
+        context_t child_context = parent_context.fork();
 
         std::string invalid_line_message = "Detected instance(s) of invalid line content:\n";
         int invalid_count = 0;
@@ -106,12 +106,29 @@ namespace scidf
                     auto [name, raw_value] = parse_assignment(lines[i], child_context);
                     if (node[name].has_value()) throw sdf_line_exception(lines[i], "attempted duplicate assignment");
                     //Todo: resolve the name here if there is a function invocation
-                    node[name].set_value(resolve(raw_value, child_context));
+                    try
+                    {
+                        node[name].set_value(resolve(raw_value, child_context));
+                    }
+                    catch (const std::exception& e)
+                    {
+                        throw sdf_line_exception(lines[i], std::string("failed to resolve assignment content:\n") + e.what());
+                    }
                     break;
                 }
                 case line_imperative:
                 {
-                    auto [func_name, func_args] = parse_func_invokation(lines[i], child_context);
+                    auto [func_name, func_args] = [&]()
+                    {
+                        try
+                        {
+                            return parse_func_invokation(lines[i].first, child_context);
+                        }
+                        catch (const std::exception& e)
+                        {
+                            throw sdf_line_exception(lines[i], std::string("Error extracting function invokation data:\n") + e.what());
+                        }
+                    }();
                     try
                     {
                         execute_imperative(func_name, func_args, child_context);
@@ -125,7 +142,17 @@ namespace scidf
                 }
                 case line_import:
                 {
-                    auto [func_name, func_args] = parse_func_invokation(lines[i], child_context);
+                    auto [func_name, func_args] = [&]()
+                    {
+                        try
+                        {
+                            return parse_func_invokation(lines[i].first, child_context);
+                        }
+                        catch (const std::exception& e)
+                        {
+                            throw sdf_line_exception(lines[i], std::string("Error extracting function invokation data:\n") + e.what());
+                        }
+                    }();
                     if (func_name != child_context.get_syms().import_symbol)
                         throw sdf_line_exception(lines[i], "paradox: parse import as " + func_name);
                     //Todo: resolve names here if need be
@@ -160,7 +187,7 @@ namespace scidf
                 {
                     try
                     {
-                        context_def(lines[i], child_context);
+                        context_def(lines[i].first, child_context);
                     }
                     catch (const std::exception& e)
                     {

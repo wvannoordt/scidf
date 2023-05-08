@@ -7,9 +7,8 @@ int main(int argc, char** argv)
     scidf::node_t   data;
     scidf::clargs_t clargs(argc, argv);
     scidf::read(filename, data, clargs);
-
-    std::string resolved_name = data["resolved_name"];
-    // print(resolved_name);
-
+    
+    std::string resolved_name = data["matval"];
+    print(resolved_name);
     return 0;
 }

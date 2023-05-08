@@ -11,11 +11,11 @@
 namespace scidf
 {
     static std::tuple<std::string, std::vector<std::string>>
-    parse_func_invokation(const std::pair<std::string, std::size_t>& line, const context_t& context)
+    parse_func_invokation(const std::string& line, const context_t& context)
     {
         std::size_t spos = std::string::npos, epos = std::string::npos;
 
-        const std::string& raw = line.first;
+        const std::string& raw = line;
         std::vector<std::string> args_out;
         int level = 0;
         bool string_escaped = false;
@@ -45,17 +45,17 @@ namespace scidf
             
             if (add_char) current_arg += raw[i];
 
-            if (level < 0) throw sdf_line_exception(line, "unbalanced argument delimiters (close-arg)");
+            if (level < 0) throw sdf_exception("unbalanced argument delimiters (close-arg)");
         }
         args_out.push_back(str::trim(current_arg, context.get_syms().whitespace));
-        if (spos == std::string::npos) throw sdf_line_exception(line, "cannot invoke function name without arguments");
+        if (spos == std::string::npos) throw sdf_exception("cannot invoke function name without arguments");
         std::size_t atpos = raw.find_first_of(context.get_syms().invoke_func);
-        if (atpos == std::string::npos) throw sdf_line_exception(line, "ill-formatted function invocation");
+        if (atpos == std::string::npos) throw sdf_exception("ill-formatted function invocation");
         std::size_t start = atpos + 1;
         std::size_t end   = spos;
-        if (end < start) throw sdf_line_exception(line, "cannot parse function name");
+        if (end < start) throw sdf_exception("cannot parse function name");
         std::string fname = raw.substr(start, end - start);
-        if (level != 0) throw sdf_line_exception(line, "unbalanced argument delimiters (open-arg)");
+        if (level != 0) throw sdf_exception("unbalanced argument delimiters (open-arg)");
         return std::make_tuple(str::trim(fname, context.get_syms().whitespace), args_out);
     }
 }

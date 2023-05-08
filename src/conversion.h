@@ -5,7 +5,7 @@
 #include <vector>
 #include <sstream>
 #include "sdf_exception.h"
-#include "context.h"
+#include "syms.h"
 #include "extract_vector.h"
 
 namespace scidf

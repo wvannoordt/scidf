@@ -83,4 +83,9 @@ namespace scidf::str
         str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
         return str;
     }
+
+    static std::string overwrite_insert_at(const std::string& inp, const std::size_t& pos, const std::string& insr)
+    {
+        return inp.substr(0, pos) + insr + inp.substr(pos+1, inp.length() - pos - 1);
+    }
 }
