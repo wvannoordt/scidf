@@ -215,7 +215,7 @@ namespace scidf
             const std::string&  section_name    = sub.first;
             const content_view& section_content = sub.second;
             auto& new_node = node[section_name];
-            parse(section_content, new_node, parent_context);
+            parse(section_content, new_node, child_context);
         }
     }
 }

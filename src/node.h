@@ -45,8 +45,8 @@ namespace scidf
 
         template <typename converted_t> operator converted_t()
         {
-            if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + name + "\"");
-            if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + name + "\"");
+            if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + get_path(glob_syms) + "\"");
+            if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + get_path(glob_syms) + "\"");
             try
             {
                 iconversion_t icv(value);
@@ -56,15 +56,15 @@ namespace scidf
             }
             catch (const std::exception& e)
             {
-                throw sdf_exception("error in conversion of target \"" + name + "\":\n" + std::string(e.what()));
+                throw sdf_exception("error in conversion of target \"" + get_path(glob_syms) + "\" with value \"" + value + "\":\n" + std::string(e.what()));
             }
         }
 
-        std::string get_path(const context_t& context) const
+        std::string get_path(const syms_t& syms) const
         {
             if (is_root()) return "";
             if (parent->is_root()) return name;
-            return context.get_syms().scope_operator + name;
+            return parent->get_path(syms) + syms.scope_operator + name;
         }
         
         bool is_root() const {return parent == nullptr;}
