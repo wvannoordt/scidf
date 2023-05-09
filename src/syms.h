@@ -29,6 +29,7 @@ namespace scidf
         std::string import_symbol      = "import";
         std::string path_append        = "addpath";
         std::string builtin_invoke     = ".invoke_var";
+        std::string cli_def            = "-D";
     };
 
     static syms_t glob_syms;

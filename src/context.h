@@ -28,6 +28,37 @@ namespace scidf
         {
             parent = nullptr;
             add_defaults();
+            for (const auto& p: clargs.raw)
+            {
+                if (str::str_starts_at(p, 0, syms.cli_def))
+                {
+                    std::size_t start = syms.cli_def.length();
+                    std::size_t end   = p.length();
+                    std::string content = p.substr(start, end - start);
+                    std::size_t eq_pos = content.find_first_of(syms.assignment);
+                    std::string var_content = "";
+                    std::string name = "";
+                    if (eq_pos == std::string::npos)
+                    {
+                        name        = content;
+                        var_content = "";
+                    }
+                    else if (eq_pos >= content.length() - 1)
+                    {
+                        name        = content.substr(0, eq_pos);;
+                        var_content = "";
+                    }
+                    else
+                    {
+                        name        = content.substr(0, eq_pos);
+                        var_content = content.substr(eq_pos + 1, content.length() - eq_pos - 1);
+                    }
+                    expression_t cli_exp;
+                    cli_exp.content = var_content;
+                    cli_exp.name = name;
+                    add_expression(cli_exp);
+                }
+            }
         }
 
         context_t fork() const
