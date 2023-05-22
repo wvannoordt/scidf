@@ -1,0 +1,3 @@
+[ ] wildcard symbols to allow for inly importing partial stuff
+[ ] Importing variables and functions
+[ ] designating CLI values as explicitly required CLI values
