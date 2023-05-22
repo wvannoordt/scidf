@@ -1,3 +1,6 @@
-[ ] wildcard symbols to allow for inly importing partial stuff
+[ ] wildcard symbols to allow for only importing partial stuff
 [ ] Importing variables and functions
 [ ] designating CLI values as explicitly required CLI values
+[ ] require contextual definitions (with signatures) when importing modules
+[ ] decorations on function parameters that throw errors when not satisfied (e.g. $ func(x, #y) over $ func(x, y) to assert that y should be a numeric)
+[ ] arithmetic with numeric arguments
