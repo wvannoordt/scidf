@@ -1,0 +1,3 @@
+$variable = "here is some value"
+data_in_module1 = $(variable)
+this_works_too = "CLI Argument: $(cli_value)"

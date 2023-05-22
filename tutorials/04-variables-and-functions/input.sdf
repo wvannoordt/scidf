@@ -1,0 +1,28 @@
+// We can declare variables using the '$' character
+$ some_variable = 100
+
+// They can then be referenced also using the '$'
+// character at a later time
+variable_val = $(some_variable)
+
+// Variables can also take parameters and are something
+// like functions:
+$ filename(direc) = "$(direc)/data.vtk"
+my_filename = $filename(output)
+
+// multiple parameters (there can be arbitrarily many):
+$ pair(x,y) = [$(x), $(y)]
+my_pair = $pair(1, 2)
+
+// there are some built-in functions that
+// scidf has implemented as well, though
+// the list of these functions is currently
+// considered incomplete (more to come!)
+
+// retrieves the environment variable named 'HOME'
+// Note that some systems may not have this
+env_var = @env(HOME)
+
+// "choose" simply returns the ith element from the
+// provided list (zero-based)
+chosen = @choose(1, option0, option1, option2)

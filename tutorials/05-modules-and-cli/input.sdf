@@ -1,0 +1,22 @@
+// NOTE: in order for this example to run, you must pass
+// the command line argument "-Dcli_value=something"
+// to the executable, or else scidf will throw an
+// error
+cli_variable = $(cli_value)
+
+// We can also import values from other sdf files:
+@import(module0)
+
+//We can import modules in sections too
+Section0
+{
+    @import(module0)
+}
+
+// Sometimes, we may need to import from various paths.
+// To instruct scidf to look on another path for a module,
+// use 'addpath':
+@addpath(./subdir)
+@import(module1)
+
+// Note that variables form this module will be visible by the imported module!

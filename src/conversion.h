@@ -85,5 +85,29 @@ namespace scidf
                 throw sdf_exception(std::string("bad vector parse: \"" + raw + "\"\nMessage: ") + e.what());
             }
         }
+
+        //Overload accounting for the super-weird stl quirk here:
+        //https://stackoverflow.com/questions/8399417/why-vectorboolreference-doesnt-return-reference-to-bool
+        const iconversion_t& operator >> (std::vector<bool>& data) const
+        {
+            try
+            {
+                std::vector<std::string> individual;
+                (*this) >> individual;
+                data.clear();
+                for (const auto& str: individual)
+                {
+                    bool val;
+                    iconversion_t icv(str);
+                    icv >> val;
+                    data.push_back(val);
+                }
+                return *this;
+            }
+            catch(const std::exception& e)
+            {
+                throw sdf_exception(std::string("bad vector parse: \"" + raw + "\"\nMessage: ") + e.what());
+            }
+        }
     };
 }

@@ -1,14 +1,11 @@
-#include <print.h>
+#include <iostream>
 #include "scidf.h"
 
 int main(int argc, char** argv)
 {
-    std::string     filename = "data.sdf";
-    scidf::node_t   data;
-    scidf::clargs_t clargs(argc, argv);
-    scidf::read(filename, data, clargs);
+    const std::string filename = "data.sdf";
+    scidf::node_t data;
+    scidf::read(filename, data);
     
-    std::string resolved_name = data["matval"];
-    print(resolved_name);
     return 0;
 }

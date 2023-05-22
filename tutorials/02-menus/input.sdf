@@ -1,0 +1,15 @@
+//Menus have the basic form shown below.
+//They can have arbitrarily many options, and it
+//is considered a mistake to parse a menu with no
+//selected options. An option is slected if there
+//are any non-whitespace characters between the option
+//brackets, and it is not selected if all characters
+//between the brackets are whitespace.
+
+string_menu = [x] option_0, [] option_1, [] option_2
+
+//We can make a multi-line menu with backslashes
+int_menu    = [ ] 3,  \
+              [x] 2,  \
+              [ ] 4,  \
+              [ ] 1

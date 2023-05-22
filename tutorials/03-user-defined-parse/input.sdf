@@ -1,0 +1,5 @@
+named_vec = juice:[5, 4, 2]
+
+v_named_vec = [bacon:[4, 2, 1], eggs:[6, 5, 2], toast:[1, 1, 1]]
+
+m_named_vec = [ ] smoke:[0,0], [x] fire:[3, 2]

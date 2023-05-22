@@ -1,0 +1,11 @@
+//We can generate a comment using C-style notation
+variable       = value //We can have comments inline too
+other_variable = "other/*comments can even be inserted into values! (though why would you...)*/value"
+Section
+{
+    variable_in_section = 100
+    NestedSection
+    {
+        another_variable = 110923
+    }
+}
