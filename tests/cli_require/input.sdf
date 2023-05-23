@@ -1,0 +1,9 @@
+
+//Throw an error if cli_value is not defined
+@cli_require(cli_value)
+
+variable0 = value1
+variable1 = $(cli_value)
+variable2 = value3
+
+@import(submod)

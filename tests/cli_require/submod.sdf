@@ -1,0 +1,2 @@
+@cli_require(submod_arg)
+val2 = $(submod_arg)

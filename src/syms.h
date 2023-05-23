@@ -24,10 +24,12 @@ namespace scidf
         char invoke_var                = '$';
         char assignment                = '=';
         char argument_separator        = ',';
+        std::string wildcard_any       = "*";
         std::string scope_operator     = ".";
         std::string file_extension     = ".sdf";
         std::string import_symbol      = "import";
         std::string path_append        = "addpath";
+        std::string cli_require        = "cli_require";
         std::string builtin_invoke     = ".invoke_var";
         std::string cli_def            = "-D";
     };

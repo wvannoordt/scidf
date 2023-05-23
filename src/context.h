@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <set>
 #include <functional>
 #include "clargs.h"
 #include "expression.h"
@@ -15,6 +16,9 @@ namespace scidf
         std::map<std::string, func_type> functions;
         std::vector<std::filesystem::path> paths;
         std::map<std::string, expression_t> expressions;
+
+        //holds only the names of cli arguments for @cli_require
+        std::set<std::string> cli_arg_names;
         const syms_t syms{glob_syms};
 
         const context_t* parent = nullptr;
@@ -45,7 +49,7 @@ namespace scidf
                     }
                     else if (eq_pos >= content.length() - 1)
                     {
-                        name        = content.substr(0, eq_pos);;
+                        name        = content.substr(0, eq_pos);
                         var_content = "";
                     }
                     else
@@ -57,16 +61,23 @@ namespace scidf
                     cli_exp.content = var_content;
                     cli_exp.name = name;
                     add_expression(cli_exp);
+                    cli_arg_names.insert(name);
                 }
             }
+        }
+
+        bool has_cli_arg(const std::string& nm) const
+        {
+            return cli_arg_names.find(nm) != cli_arg_names.end();
         }
 
         context_t fork() const
         {
             context_t output;
-            output.functions = functions;
-            output.paths     = paths;
-            output.parent    = this;
+            output.functions     = functions;
+            output.paths         = paths;
+            output.parent        = this;
+            output.cli_arg_names = cli_arg_names;
             return output;
         }
 

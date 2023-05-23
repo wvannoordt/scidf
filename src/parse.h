@@ -159,22 +159,34 @@ namespace scidf
                     if (func_args.size() == 0) throw sdf_line_exception(lines[i], "cannot call import with no arguments ");
                     for (const auto& arg: func_args)
                     {
-                        //function arguments are treated as resolved here
-                        auto part_names = str::split(arg, child_context.get_syms().scope_operator);
-                        if (part_names.size() == 0) throw sdf_line_exception(lines[i], "invalid argument to \"" + func_name + "\"");
-                        //todo: a better job of this
-                        const std::string sdf_name = part_names[0] + child_context.get_syms().file_extension;
+                        // auto part_names = str::split(arg, child_context.get_syms().scope_operator);
+                        // if (part_names.size() == 0) throw sdf_line_exception(lines[i], "invalid argument to \"" + func_name + "\"");
+                        // const std::string sdf_name = part_names[0] + child_context.get_syms().file_extension;
+
+                        std::size_t dlm_pos = arg.find_first_of(child_context.get_syms().scope_operator);
+                        std::string sdf_name = arg + ".sdf";
+                        std::string wildcard = "";
+                        if (dlm_pos != std::string::npos)
+                        {
+                            sdf_name = arg.substr(0, dlm_pos)+".sdf";
+                        }
+                        if (dlm_pos < arg.length() - 1)
+                        {
+                            wildcard = arg.substr(dlm_pos+1, arg.length() - dlm_pos - 1);
+                        }
+                        
                         //todo: replace with std::expected when the cows freeze over
                         std::string filename;
                         if (!child_context.path_search(sdf_name, filename))
                             throw sdf_line_exception(lines[i], "cannot find file \"" + sdf_name + "\"... missing path?");
+                        
                         const std::string file_contents = str::read_contents(filename);
                         content_view import_content(file_contents);
                         node_t imported;
                         try
                         {
                             parse(import_content, imported, child_context);
-                            import(node, imported, arg, child_context);
+                            import(node, imported, wildcard, child_context);
                         }
                         catch (const std::exception& e)
                         {

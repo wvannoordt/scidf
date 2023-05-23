@@ -1,0 +1,11 @@
+Output
+{
+    nt_skip = 1000
+    ck_Skip = 100
+}
+@import(defaults.[Grid, Num])
+Fluid
+{
+    gamma = 1.5
+    Rgas  = 232.15
+}

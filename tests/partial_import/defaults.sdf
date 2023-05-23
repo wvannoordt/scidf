@@ -1,0 +1,18 @@
+Grid
+{
+    nx = 100
+    Lx = 1.0
+    SubsectionInGrid
+    {
+        message = "do not import"
+    }
+}
+Fluid
+{
+    gamma = 1.4
+    Rgas  = 287.15
+}
+Num
+{
+    eps = 1e-8
+}
