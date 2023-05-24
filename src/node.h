@@ -43,7 +43,7 @@ namespace scidf
         node_t(node_t* parent_in, const std::string& name_in)
         : parent{parent_in}, name{name_in}, value{default_value()}, level{parent_in->level+1} {}
 
-        template <typename converted_t> operator converted_t()
+        template <typename converted_t> operator converted_t() const
         {
             if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + get_path(glob_syms) + "\"");
             if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + get_path(glob_syms) + "\"");
@@ -60,7 +60,7 @@ namespace scidf
             }
         }
 
-        std::string get_path(const syms_t& syms) const
+        std::string get_path(const syms_t& syms = glob_syms) const
         {
             if (is_root()) return "";
             if (parent->is_root()) return name;
