@@ -3,7 +3,7 @@ target := a.x
 flags :=
 flags += -std=c++20
 flags += -fmax-errors=4
-flags += -g
+#flags += -g
 flags += -O3
 ifeq (${sanny},1)
 flags += -fsanitize=undefined,address -fstack-protector-all

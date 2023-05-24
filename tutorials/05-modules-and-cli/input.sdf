@@ -2,6 +2,11 @@
 // the command line argument "-Dcli_value=something"
 // to the executable, or else scidf will throw an
 // error
+
+// By invoking cli_require, you can have
+// the parser throw an error if the
+// variable isn't present on the command line
+@cli_require(cli_value)
 cli_variable = $(cli_value)
 
 // We can also import values from other sdf files:
@@ -20,3 +25,18 @@ Section0
 @import(module1)
 
 // Note that variables form this module will be visible by the imported module!
+
+
+// You can also do partial importing. In this case,
+// We have a section called Section1 that also exists in
+// the module "partial_import", and when importing, we
+// don't want to overwrite it.
+// "partial_import" has Section1, Section2, and Section3,
+// so we can just import Section2 and Section3 as follows:
+
+@import(partial_import.[Section2, Section3])
+
+Section1
+{
+    value = 0
+}
