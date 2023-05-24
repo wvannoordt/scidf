@@ -3,6 +3,7 @@
 #include "sdf_exception.h"
 #include "node.h"
 #include <concepts>
+#include <optional>
 
 namespace scidf
 {
@@ -27,12 +28,12 @@ namespace scidf
             try
             {
                 value_t out = (*this);
-                if (!cond.verify(out)) throw sdf_exception("failed conditional evaluation");
+                if (!cond.verify(out)) throw sdf_exception("failed conditional evaluation:\n" + cond.get_message());
                 return out;
             }
             catch (const std::exception& e)
             {
-                throw sdf_exception("bad conditional evaluation of \"" + node.get_path() + std::string("\": ") + e.what());
+                throw sdf_exception("bad conditional evaluation of \"" + node.get_path() + std::string("\" with value \"" + node.get_value() + "\": ") + e.what());
             }
         }
     };

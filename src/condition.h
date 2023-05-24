@@ -2,6 +2,7 @@
 
 #include "sdf_exception.h"
 #include <filesystem>
+#include <optional>
 
 namespace scidf
 {
@@ -10,13 +11,22 @@ namespace scidf
         constexpr static bool scidf_value_verifiable_tag = true;
         const eval_t eval; //todo: check if can hold by reference here!
         bool inverse = false;
+        std::string message;
 
         lazy_condition_t(const eval_t& eval_in)
-        : eval{eval_in} {}
+        : eval{eval_in}, message{"[unspecified conditional]"} {}
+
+        lazy_condition_t(const eval_t& eval_in, const std::string& message_in)
+        : eval{eval_in}, message{message_in} {}
 
         bool verify(const auto& val) const
         {
             return (inverse == !eval(val));
+        }
+
+        std::string get_message() const
+        {
+            return inverse?("NOT {" + message + "}"):message;
         }
 
         lazy_condition_t operator! () const
@@ -38,16 +48,31 @@ namespace scidf
     struct binary_op_t
     {
         constexpr static bool scidf_value_verifiable_tag = true;
-        const lhs_t& lhs;
-        const rhs_t& rhs;
+        const lhs_t lhs;
+        const rhs_t rhs;
         bool inverse = false;
         bool verify(const auto& val) const
         {
-            bool ll = lhs.verify(val);
-            bool rr = rhs.verify(val);
-            if constexpr (operation == binary_and) return (!inverse) == (ll && rr);
-            if constexpr (operation == binary_or ) return (!inverse) == (ll || rr);
-            return false;
+            bool ll_b = lhs.verify(val);
+            bool rr_b = rhs.verify(val);
+            bool good_result = false;
+            if constexpr (operation == binary_and) { good_result = (!inverse) == (ll_b && rr_b); }
+            if constexpr (operation == binary_or ) { good_result = (!inverse) == (ll_b || rr_b); }
+            return good_result;
+        }
+
+        std::string get_message() const
+        {
+            std::string message = "** internal error **";
+            if constexpr (operation == binary_and)
+            {
+                message = "{" + lhs.get_message() + "} AND {" + rhs.get_message() + "}";
+            }
+            if constexpr (operation == binary_or)
+            {
+                message = "{" + lhs.get_message() + "} OR {" + rhs.get_message() + "}";
+            }
+            return inverse?("NOT {" + message + "}"):message;
         }
 
         binary_op_t operator! () const
@@ -79,7 +104,7 @@ namespace scidf
 
     template <typename eval_t> static auto condition(const eval_t& eval, const std::string& message)
     {
-        return lazy_condition_t(eval);
+        return lazy_condition_t(eval, message);
     }
 
     template <typename value_t>
@@ -113,4 +138,20 @@ namespace scidf
     {
         return std::filesystem::exists(std::string(v)) && std::filesystem::is_directory(std::string(v));
     }, "value must be an existing file");
+
+    static auto size_is(const std::size_t& rsize)
+    { return condition([=](const auto& v){return v.size() == rsize;}, "size must be " + std::to_string(rsize));}
+
+    static auto all_elements(const auto& verifiable)
+    {
+        return condition([=](const auto& iterable)
+        {
+            for (const auto& i: iterable)
+            {
+                if (!verifiable.verify(i)) return false;
+            }
+            return true;
+        },
+        "all elements must satisfy {" + verifiable.get_message() + "}");
+    }
 }

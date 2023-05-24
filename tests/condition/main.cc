@@ -12,9 +12,9 @@ int main(int argc, char** argv)
     scidf::read(filename, data, clargs);
 
     int val1 = scidf::default_to(15, data["value"])
-        >> (scidf::greater_than(4) && scidf::less_than(10) && !scidf::even);
+        >> !((scidf::greater_than(4) && scidf::less_than(10)) || !scidf::even);
     
     std::string output_file = scidf::required<std::string>(data["file"])
-        >> !scidf::is_file;
+        >> scidf::is_file;
     return 0;
 }

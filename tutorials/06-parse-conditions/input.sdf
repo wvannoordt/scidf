@@ -1,0 +1,11 @@
+file          = main.cc
+dvalue        = -3.14
+my_int        = 14
+vec           = [0, 2, 4, 1, 8]
+defaulted_int = 13
+
+value0        = 134
+value1        = 188
+value2        = 129084
+
+test_vec      = [-1230.0, 1.41428, 1.001, 1.2193123]
