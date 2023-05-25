@@ -269,5 +269,47 @@ number = $(clival)
 
 For more info, take a look at tutorial `05-modules-and-cli`.
 
-### Value Conditions
+### Value Conditions and Defaults
 
+SCIDF allows for setting default values for input parameters. We can do this as follows:
+
+```c++
+int int_val = scidf::default_to(15, data["int_val"]);
+```
+
+This means that `int_val` will be set to 15 if it isn't present in the input file. We can also
+use `required` to require that input parameters are specified:
+
+```c++
+int int_val = scidf::required<int>(data["int_val"]);
+```
+
+although this is the default behaviour anyway. However, after using one of these two constructs,
+we can then apply conditions to their values, e.g.
+
+```c++
+int int_val = scidf::required<int>(data["int_val"])
+    >> scidf::even;
+```
+
+This will require that the value for `int_val` is even, and if it isn't then an exception will be thrown.
+These conditions are negatable and can be operated on with binary logical operators, e.g.
+
+```c++
+int int_val = scidf::required<int>(data["int_val"])
+    >> (!scidf::even && scidf::greater_than(3));
+```
+
+It is easy to implement your own conditions, e.g.:
+
+```c++
+auto my_condition = scidf::condition([=](const auto& v)
+{
+    return (v[1] > (dval - 1e-3)) && (v[1] < (dval + 1e-3));
+}, "second element must be within 1e-3 of sqrt(2)");
+
+std::vector<double> test_vec = scidf::required<std::vector<double>>(data["test_vec"])
+    >> my_condition;
+```
+
+See tutorial `06-parse-conditions` for further information.
