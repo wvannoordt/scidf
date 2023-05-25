@@ -76,6 +76,7 @@ int main(int argc, char** argv)
 
     // Finally, in the most general case, we can define any custom condition we want:
     const double dval = std::sqrt(2.0);
+
     //Note that it is generally good practice to use value-capturing here.
     auto my_condition = scidf::condition([=](const auto& v)
     {
@@ -85,7 +86,7 @@ int main(int argc, char** argv)
     std::vector<double> test_vec = scidf::required<std::vector<double>>(data["test_vec"])
         >> my_condition;
     
-    // Note that there are currently no conditions that apply to menus.
+    // Note that there are currently no conditions that apply to menus or booleans.
 
     return 0;
 }

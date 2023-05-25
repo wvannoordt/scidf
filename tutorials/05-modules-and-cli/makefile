@@ -10,7 +10,7 @@ flags += -fsanitize=undefined,address -fstack-protector-all
 endif
 
 incl :=
-incl += -I${SCIDF}/src
+incl += -I../../src
 
 link :=
 
