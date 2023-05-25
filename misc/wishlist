@@ -2,5 +2,6 @@
 [ ] Importing variables and functions
 [x] designating CLI values as explicitly required CLI values
 [ ] require contextual definitions (with signatures) when importing modules
+[x] conditions on parsed values
 [ ] decorations on function parameters that throw errors when not satisfied (e.g. $ func(x, #y) over $ func(x, y) to assert that y should be a numeric)
 [ ] arithmetic with numeric arguments
