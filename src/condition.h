@@ -138,6 +138,17 @@ namespace scidf
     {
         return std::filesystem::exists(std::string(v)) && std::filesystem::is_directory(std::string(v));
     }, "value must be an existing file");
+    
+    template <typename value_t>
+    static auto equals(const value_t& val)
+    { return condition([=](const value_t& v){return v == val;}, "value must be equal to \"" + std::to_string(val) + "\"");}
+    
+    static auto equals(const std::string& val)
+    { return condition([=](const std::string& v){return v == val;}, "value must be equal to \"" + val + "\"");}
+    
+    static auto equals(const char val[])
+    { return condition([=](const std::string& v){return v == val;}, "value must be equal to \"" + std::string(val) + "\"");}
+    
 
     static auto size_is(const std::size_t& rsize)
     { return condition([=](const auto& v){return v.size() == rsize;}, "size must be " + std::to_string(rsize));}
