@@ -87,6 +87,13 @@ namespace scidf
             }
             return children.at(key);
         }
+        
+        //Added because nvcc thinks everything is an int
+        template <const int csize>
+        node_t& operator[] (const char (&str)[csize])
+        {
+            return (*this)[std::string(str)];
+        }
     };
     
     namespace detail
