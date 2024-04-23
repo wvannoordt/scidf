@@ -56,12 +56,25 @@ namespace scidf
             if (raw.length() == 1) throw sdf_exception("incomprehensible string parse: \"" + raw + "\"");
             std::size_t start = 1;
             std::size_t end   = raw.length() - 1;
-            if (raw[0] == syms.open_string && raw[raw.length()-1] == syms.open_string)
+            const auto count = [&](const auto& str, char srh)
+            {
+                int output = 0;
+                for (const auto& c: str)
+                {
+                    if (c == srh) ++output;
+                }
+                return output;
+            };
+            
+            if (raw[0] == syms.open_string && raw[raw.length()-1] == syms.open_string && (count(raw, syms.open_string)==2))
             {
                 data = raw.substr(start, end-start);
                 return *this;
             }
-            throw get_default_exception();
+            
+            data = raw;
+            return *this;
+            // throw get_default_exception();
         }
 
         template <typename data_t> const iconversion_t& operator >> (std::vector<data_t>& data) const
