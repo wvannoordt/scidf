@@ -15,11 +15,10 @@ namespace scidf
         lazy_conversion_t(const value_t& value_in, const node_t& node_in)
         : default_value{value_in}, node{node_in} {}
 
-        template <typename assigned_t>
-        operator assigned_t() const
+        operator value_t() const
         {
-            if (node.has_value()) return node;
-            else                  return default_value;
+            if (node.has_value()) return value_t(node);
+            else                  return value_t(default_value);
         }
 
         template <typename condition_t>

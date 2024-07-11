@@ -5,10 +5,10 @@
 
 namespace scidf
 {
-    template <typename value_t>
-    static lazy_conversion_t<value_t> default_to(const value_t& value, const node_t& node)
+    template <typename as_t, typename value_t>
+    static lazy_conversion_t<as_t> default_to(const value_t& value, const node_t& node)
     {
-        return lazy_conversion_t(value, node);
+        return lazy_conversion_t<as_t>(as_t(value), node);
     }
 
     template <typename out_t>

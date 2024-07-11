@@ -88,6 +88,11 @@ namespace scidf
             return children.at(key);
         }
         
+        const node_t& at(const std::string& key) const
+        {
+            return children.at(key);
+        }
+        
         //Added because nvcc thinks everything is an int
         template <const int csize>
         node_t& operator[] (const char (&str)[csize])
