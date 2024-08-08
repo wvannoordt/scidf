@@ -18,7 +18,8 @@ namespace scidf
         static std::string default_value() {return "[[NOVALUE]]";}
         node_t* parent;
         std::string name, value;
-        bool assigned_value = false;
+        bool assigned_value  = false;
+        mutable bool extracted_value = false;
         std::map<std::string, node_t> children;
         int level;
         
@@ -45,6 +46,7 @@ namespace scidf
 
         template <typename converted_t> operator converted_t() const
         {
+        	extracted_value = true;
             if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + get_path(glob_syms) + "\"");
             if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + get_path(glob_syms) + "\"");
             try
