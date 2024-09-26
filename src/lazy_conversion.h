@@ -17,7 +17,11 @@ namespace scidf
 
         operator value_t() const
         {
-            if (node.has_value()) return value_t(node);
+            if (node.has_value())
+            {
+                node.extracted_value = true;
+                return value_t(node);
+            }
             else                  return value_t(default_value);
         }
 
