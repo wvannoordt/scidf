@@ -17,7 +17,7 @@ namespace scidf
 
         std::string raw_fname = str::trim(raw.substr(1, i_assign - 1), context.get_syms().whitespace);
 
-        i_assign ++;
+        i_assign++;
         if (i_assign >= raw.length()-1) throw sdf_exception("empty expression assignment");
         std::string raw_rhs   = str::trim(raw.substr(i_assign, raw.length() - i_assign), context.get_syms().whitespace);
         expression_t new_expression;

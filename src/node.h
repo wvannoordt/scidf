@@ -30,6 +30,12 @@ namespace scidf
             value = default_value();
             level = 0;
         }
+        
+        node_t& operator = (const std::string& val_in)
+        {
+            this->set_value(val_in);
+            return *this;
+        }
 
         template <typename criterion_t, typename action_t>
         void visit(const criterion_t& crit, const action_t action) const
