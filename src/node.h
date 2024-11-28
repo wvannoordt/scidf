@@ -112,7 +112,7 @@ namespace scidf
     namespace detail
     {
         constexpr static int tabwid = 4;
-        void rprint_node(std::ostream& os, const node_t& node, const int space)
+        static void rprint_node(std::ostream& os, const node_t& node, const int space)
         {
             for (auto p: node.children)
             {
@@ -124,7 +124,7 @@ namespace scidf
         }
     }
     
-    std::ostream& operator << (std::ostream& os, const node_t& node)
+    static std::ostream& operator << (std::ostream& os, const node_t& node)
     {
         if (node.is_terminal())
         {
