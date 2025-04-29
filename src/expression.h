@@ -13,7 +13,7 @@ namespace scidf
         std::string content;
     };
 
-    std::ostream& operator << (std::ostream& os, const expression_t& expr)
+    inline std::ostream& operator << (std::ostream& os, const expression_t& expr)
     {
         os << "Name: " << expr.name << "\nContent: " << expr.content << "\nParameters:";
         for (const auto& p: expr.parameter_names) os << "\n" << p;

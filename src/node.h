@@ -8,6 +8,7 @@
 #include "string_conversion.h"
 #include "context.h"
 #include "conversion.h"
+#include "ordered_map.h"
 
 namespace scidf
 {
@@ -20,7 +21,7 @@ namespace scidf
         std::string name, value;
         bool assigned_value  = false;
         mutable bool extracted_value = false;
-        std::map<std::string, node_t> children;
+        ordered_map<std::string, node_t> children;
         int level;
         
         node_t()
@@ -112,7 +113,7 @@ namespace scidf
     namespace detail
     {
         constexpr static int tabwid = 4;
-        void rprint_node(std::ostream& os, const node_t& node, const int space)
+        inline void rprint_node(std::ostream& os, const node_t& node, const int space)
         {
             for (auto p: node.children)
             {
@@ -124,7 +125,7 @@ namespace scidf
         }
     }
     
-    std::ostream& operator << (std::ostream& os, const node_t& node)
+    inline std::ostream& operator << (std::ostream& os, const node_t& node)
     {
         if (node.is_terminal())
         {
