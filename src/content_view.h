@@ -45,7 +45,6 @@ namespace scidf
         };
     };
 
-    inline std::ostream& operator << (std::ostream& os, const content_view& content)
     static std::ostream& operator << (std::ostream& os, const content_view& content)
     {
         os << content.to_string();
