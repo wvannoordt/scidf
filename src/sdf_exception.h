@@ -43,4 +43,18 @@ namespace scidf
             return error_message.c_str();
         }
     };
+    
+    struct sdf_unassigned_exception : public std::exception
+    {
+        std::string error_message;
+        sdf_unassigned_exception(const std::string& message_in)
+        {
+            error_message = "scidf unassigned exception: " + message_in;
+        }
+        
+        const char* what() const throw()
+        {
+            return error_message.c_str();
+        }
+    };
 }

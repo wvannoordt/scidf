@@ -32,6 +32,8 @@ namespace scidf
             level = 0;
         }
         
+        bool empty() const { return children.size() == 0; }
+        
         node_t& operator = (const std::string& val_in)
         {
             this->set_value(val_in);
@@ -54,8 +56,8 @@ namespace scidf
         template <typename converted_t> operator converted_t() const
         {
         	extracted_value = true;
-            if (!assigned_value) throw sdf_exception("attempted to perform illegal conversion on unassigned node with name \"" + get_path(glob_syms) + "\"");
-            if (!is_terminal())  throw sdf_exception("attempted to perform illegal conversion on section node with name \"" + get_path(glob_syms) + "\"");
+            if (!assigned_value) throw sdf_unassigned_exception("attempted to perform illegal conversion on unassigned node with name \"" + get_path(glob_syms) + "\"");
+            if (!is_terminal())  throw sdf_unassigned_exception("attempted to perform illegal conversion on section node with name \"" + get_path(glob_syms) + "\"");
             try
             {
                 iconversion_t icv(value);
@@ -124,6 +126,7 @@ namespace scidf
             }
         }
     }
+    
     static std::ostream& operator << (std::ostream& os, const node_t& node)
     {
         if (node.is_terminal())

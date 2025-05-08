@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <tuple>
+#include <set>
 #include <string>
 #include "node.h"
 #include "resolve.h"
@@ -71,5 +72,21 @@ namespace scidf
                 }
             }
         }
+    }
+    
+    static void copy_values(node_t& dest, const node_t& external, std::set<std::string> disallow_dst, std::set<std::string> disallow_src)
+    {
+        if (disallow_dst.find(dest.get_path())     != disallow_dst.end()) return; // prevent infinite recursion
+        if (disallow_src.find(external.get_path()) != disallow_src.end()) return; // prevent infinite recursion
+        for (const auto& c: external.children)
+        {
+            if (c.second.is_terminal() && !(dest.contains_child(c.first))) dest[c.first] = c.second.value;
+            else copy_values(dest[c.first], c.second, disallow_dst, disallow_src);
+        }
+    }
+    
+    static void copy_values(node_t& dest, const node_t& external)
+    {
+        copy_values(dest, external, {external.get_path()}, {});
     }
 }
