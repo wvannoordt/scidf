@@ -13,11 +13,11 @@ namespace scidf
             std::string tab(4*rlev, ' ');
             for (const auto& [name, child] : node.children)
             {
-                if (child.is_terminal())
+                if (child.is_terminal() && child.assigned_value)
                 {
                     os << tab << name << " = " << child.get_value() << "\n";
                 }
-                else
+                else if (!child.children.empty())
                 {
                     os << tab << name << "\n";
                     os << tab << "{" << "\n";

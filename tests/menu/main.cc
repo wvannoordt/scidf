@@ -20,18 +20,16 @@ const scidf::iconversion_t& operator >> (const scidf::iconversion_t& i, custom_t
 
 int main(int argc, char** argv)
 {
-    std::string filename = "data.sdf";
-    scidf::node_t data;
+    std::string filename0 = "err-bad.sdf";
+    std::string filename1 = "err-good.sdf";
+    scidf::node_t data0, data1;
     scidf::clargs_t clargs(argc, argv);
-    scidf::read(filename, data, clargs);
-    scidf::menu_t<std::string>           menu1 = data["menu1"];
-    scidf::menu_t<int>                   menu2 = data["menu2"];
-    scidf::menu_t<std::vector<int>>      menu3 = data["menu3"];
-    custom_t                             thing = data["custom"];
-    scidf::menu_t<std::vector<custom_t>> cmenu = data["cmenu"];
-    print(std::boolalpha);
-    print(cmenu.selected_value()[0].x, cmenu.selected_value()[0].y);
-    print(cmenu.selected_value()[1].x, cmenu.selected_value()[1].y);
-    print(cmenu.selected_value()[2].x, cmenu.selected_value()[2].y);
+    scidf::read(filename0, data0, clargs);
+    scidf::read(filename1, data1, clargs);
+    print("=================");
+    print(data0);
+    print("=================");
+    print(data1);
+    print("=================");
     return 0;
 }

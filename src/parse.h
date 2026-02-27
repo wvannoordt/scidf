@@ -67,7 +67,7 @@ namespace scidf
             return line_imperative;
         }
         bool has_assignment_operator = (line.find(context.get_syms().assignment) != std::string::npos);
-        if (has_assignment_operator && line[0]==context.get_syms().invoke_var) return line_contextdef;
+        if (has_assignment_operator && line[0] == context.get_syms().invoke_var) return line_contextdef;
         if (has_assignment_operator) return line_assignment;
         return line_invalid;
     }
@@ -217,7 +217,7 @@ namespace scidf
                 }
             }
         }
-        if (invalid_count>0)
+        if (invalid_count > 0)
         {
             throw sdf_exception(invalid_line_message);
         }
