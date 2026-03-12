@@ -4,12 +4,16 @@
 #include "context.h"
 #include "clargs.h"
 #include "parse.h"
+#include "json_read.h"
 
 #include <string>
 #include <fstream>
 #include <streambuf>
 #include <tuple>
 #include <optional>
+#include <filesystem>
+
+#include "json_read.h"
 
 namespace scidf
 {
@@ -29,10 +33,18 @@ namespace scidf
     
     static void read(const std::string& filename, node_t& node, const context_t& parent_context)
     {
-        std::string file_contents = str::read_contents(filename);
-        detail::filter_bad_chars(file_contents);
-        content_view content(file_contents);
-        parse(content, node, parent_context);
+        auto extension = std::filesystem::path(filename).extension();
+        if (extension == ".json")
+        {
+            json_read(filename, node, parent_context);
+        }
+        else
+        {
+            std::string file_contents = str::read_contents(filename);
+            detail::filter_bad_chars(file_contents);
+            content_view content(file_contents);
+            parse(content, node, parent_context);
+        }
     }
     
     static void read(const std::string& filename, node_t& node)
